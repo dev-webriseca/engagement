@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "We're Engaged · Friday, August 21, 2026",
     images: [
       {
-        url: "/images/og-image.png",
+        url: "/images/og-image.png?v=3",
         width: 1200,
         height: 630,
         alt: "Bismillah al-Rahman al-Rahim — Ibrahim & Maryam's Engagement"
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ibrahim & Maryam's Engagement",
     description: "We're Engaged · Friday, August 21, 2026",
-    images: ["/images/og-image.png"]
+    images: ["/images/og-image.png?v=3"]
   }
 };
 
