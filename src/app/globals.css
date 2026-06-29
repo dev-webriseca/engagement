@@ -140,7 +140,6 @@ a {
 .heroImage {
   object-fit: cover;
   object-position: center 32%;
-  filter: grayscale(1);
 }
 
 .heroDetails {
@@ -498,15 +497,27 @@ a {
   align-items: center;
   transform: translateX(-50%);
   gap: 12px;
-  min-width: 144px;
-  min-height: 49px;
+  min-width: 154px;
+  min-height: 52px;
   border: 5px solid var(--navy);
   border-radius: 0;
-  background: var(--paper);
+  background: var(--lavender);
   color: var(--navy);
   font-family: var(--font-display);
-  font-size: 12px;
-  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  cursor: pointer;
+  box-shadow: 0 5px 16px rgba(90, 90, 148, 0.28);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.enterPill:hover {
+  background: #b9bce0;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 8px 22px rgba(90, 90, 148, 0.38);
 }
 
 .rsvpStub {
@@ -656,6 +667,13 @@ a {
     font-family: var(--font-ui);
     font-size: 38px;
     font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .mobileRsvpButton:hover {
+    background: var(--navy);
+    transform: translateY(-2px);
   }
 
   .contentSection {
@@ -743,4 +761,553 @@ a {
   .mapSection h2 {
     font-size: 28px;
   }
+}
+
+/* RSVP Modal */
+.rsvpModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 3, 51, 0.72);
+  padding: 24px;
+}
+
+.rsvpModal {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 8px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-display);
+  padding: 40px 28px 36px;
+}
+
+.rsvpModalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.rsvpModal h2 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.rsvpSubtext {
+  margin: 0 0 28px;
+  color: var(--muted-copy);
+  font-size: 16px;
+  text-align: center;
+}
+
+.rsvpLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rsvpInput {
+  width: 100%;
+  min-height: 48px;
+  border: 2px solid var(--navy);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 16px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+}
+
+.rsvpTextarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.rsvpInput::placeholder {
+  color: rgba(0, 3, 51, 0.5);
+}
+
+.rsvpGuests {
+  margin-bottom: 8px;
+}
+
+.rsvpGuestRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rsvpGuestRow .rsvpInput {
+  flex: 1;
+  margin-bottom: 12px;
+}
+
+.rsvpIconButton {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.rsvpTextButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 24px;
+}
+
+.rsvpSubmitButton {
+  width: 100%;
+  min-height: 52px;
+  border: 4px solid var(--navy);
+  background: var(--navy);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rsvpSubmitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rsvpError {
+  margin: 0 0 16px;
+  color: #c0392b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.rsvpSuccess {
+  text-align: center;
+}
+
+.rsvpSuccess svg {
+  margin-bottom: 16px;
+  color: var(--navy);
+}
+
+.rsvpSuccess p {
+  margin: 0 0 28px;
+  color: var(--muted-copy);
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .rsvpModal {
+    padding: 36px 20px 28px;
+  }
+
+  .rsvpModal h2 {
+    font-size: 24px;
+  }
+}
+
+/* Admin Page */
+.adminShell {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-display);
+  padding: 48px 24px 64px;
+}
+
+.adminCard {
+  max-width: 420px;
+  margin: 10vh auto 0;
+  border: 8px solid var(--navy);
+  background: var(--paper);
+  padding: 40px 32px 36px;
+  text-align: center;
+}
+
+.adminLock {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  margin: 0 auto 24px;
+  border: 3px solid var(--navy);
+  border-radius: 999px;
+  color: var(--navy);
+}
+
+.adminCard h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.adminCard > p {
+  margin: 0 0 28px;
+  color: var(--muted-copy);
+  font-size: 16px;
+}
+
+.adminLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.adminInput {
+  width: 100%;
+  height: 52px;
+  border: 2px solid var(--navy);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 18px;
+  padding: 0 14px;
+  margin-bottom: 20px;
+}
+
+.adminInput::placeholder {
+  color: rgba(0, 3, 51, 0.4);
+}
+
+.adminError {
+  margin: 0 0 16px;
+  color: #c0392b;
+  font-size: 14px;
+}
+
+.adminSubmit {
+  width: 100%;
+  min-height: 52px;
+  border: 4px solid var(--navy);
+  background: var(--navy);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.adminSubmit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.adminHeader {
+  max-width: 720px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.adminHeader h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.adminHeader p {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted-copy);
+  font-size: 16px;
+}
+
+.adminList {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+.adminRsvpCard {
+  border: 3px solid var(--navy);
+  background: var(--paper);
+  padding: 22px 24px 18px;
+}
+
+.adminRsvpMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.adminRsvpMain h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.adminRsvpCount {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.adminRsvpGuestTotal {
+  margin: -8px 0 14px;
+  color: var(--muted-copy);
+  font-size: 14px;
+}
+
+.adminRsvpGuests {
+  margin-bottom: 14px;
+}
+
+.adminRsvpGuests p {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-copy);
+}
+
+.adminRsvpGuests ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.adminRsvpGuests li {
+  display: inline-block;
+  margin: 0 8px 6px 0;
+  padding: 4px 12px;
+  background: rgba(0, 3, 51, 0.06);
+  font-size: 15px;
+}
+
+.adminRsvpNotes {
+  margin-bottom: 14px;
+}
+
+.adminRsvpNotes p:first-child {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-copy);
+}
+
+.adminRsvpNotes p:last-child {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.adminRsvpCard time {
+  display: block;
+  color: var(--muted-copy);
+  font-size: 13px;
+  font-family: var(--font-ui);
+}
+
+@media (max-width: 600px) {
+  .adminShell {
+    padding: 24px 16px 40px;
+  }
+
+  .adminCard {
+    padding: 32px 22px 28px;
+  }
+
+  .adminHeader h1 {
+    font-size: 26px;
+  }
+}
+
+.adminMessage {
+  max-width: 720px;
+  margin: 0 auto 20px;
+  padding: 12px 16px;
+  border: 2px solid #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.adminRsvpActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.adminIconButton {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.adminIconButtonDanger {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.adminIconButtonDanger:hover {
+  background: #c0392b;
+  color: var(--paper);
+}
+
+.adminRsvpCardEditing form {
+  display: grid;
+  gap: 4px;
+}
+
+.adminEditLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-copy);
+}
+
+.adminEditInput,
+.adminEditTextarea {
+  width: 100%;
+  min-height: 44px;
+  border: 2px solid var(--navy);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 15px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.adminEditTextarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.adminEditGuestRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminEditGuestRow .adminEditInput {
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.adminTextButton {
+  display: inline-block;
+  border: none;
+  background: transparent;
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 14px;
+}
+
+.adminEditActions,
+.adminDeleteActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.adminSaveButton,
+.adminDeleteConfirm,
+.adminCancelButton {
+  flex: 1;
+  min-height: 44px;
+  border: 3px solid var(--navy);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adminSaveButton {
+  background: var(--navy);
+  color: var(--paper);
+}
+
+.adminDeleteConfirm {
+  border-color: #c0392b;
+  background: #c0392b;
+  color: var(--paper);
+}
+
+.adminCancelButton {
+  background: var(--paper);
+  color: var(--navy);
+}
+
+.adminRsvpCardDeleting {
+  text-align: center;
+}
+
+.adminRsvpCardDeleting > p {
+  margin: 0 0 16px;
+  font-size: 16px;
 }

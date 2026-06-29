@@ -1,19 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import {
-  CheckCircle2,
-  Coffee,
-  Heart,
-  Link as LinkIcon,
-  MapPin,
-  Menu,
-  Minus,
-  Plus,
-  Wine
-} from "lucide-react";
-import { useState } from "react";
+import { CheckCircle2, Coffee, Heart, Minus, Plus, Wine, X } from "lucide-react";
+import { useState, useTransition } from "react";
 import { siteContent } from "@/lib/siteContent";
+import { submitRsvp } from "./actions";
 
 type ScheduleIcon = "party" | "ceremony" | "brunch";
 
@@ -24,56 +15,19 @@ const scheduleIcons: Record<ScheduleIcon, React.ComponentType<{ size?: number }>
 };
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-    setMenuOpen(false);
-  };
+  const [rsvpOpen, setRsvpOpen] = useState(false);
 
   return (
     <main className="siteShell">
       <section className="eventWall" aria-label="Event details">
-        <button
-          className="menuButton"
-          type="button"
-          aria-label="Open navigation menu"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <Menu size={30} strokeWidth={3} />
-        </button>
-
-        <nav className={`eventMenu ${menuOpen ? "eventMenuOpen" : ""}`}>
-          {siteContent.navigation.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => scrollToSection(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        {menuOpen ? (
-          <button
-            className="menuBackdrop"
-            type="button"
-            aria-label="Close navigation menu"
-            onClick={() => setMenuOpen(false)}
-          />
-        ) : null}
-
         <HeroSection />
-        <MobileRsvpButton />
+        <MobileRsvpButton onClick={() => setRsvpOpen(true)} />
         <InfoSections />
       </section>
 
-      <RsvpPanel />
+      <RsvpPanel onClick={() => setRsvpOpen(true)} />
+
+      {rsvpOpen ? <RsvpModal onClose={() => setRsvpOpen(false)} /> : null}
     </main>
   );
 }
@@ -98,23 +52,23 @@ function HeroSection() {
   );
 }
 
-function MobileRsvpButton() {
+function MobileRsvpButton({ onClick }: { onClick: () => void }) {
   return (
-    <button className="mobileRsvpButton" type="button">
+    <button className="mobileRsvpButton" type="button" onClick={onClick}>
       RSVP
     </button>
   );
 }
 
-function RsvpPanel() {
+function RsvpPanel({ onClick }: { onClick: () => void }) {
   return (
     <aside className="rsvpPanel" aria-label="RSVP invitation">
       <div className="invitationCard">
         <h2>{siteContent.event.rsvpPrompt}</h2>
         <p>{siteContent.event.rsvpDeadline}</p>
-        <button className="enterPill" type="button">
+        <button className="enterPill" type="button" onClick={onClick}>
           <CheckCircle2 size={24} strokeWidth={2.4} />
-          <span>Press Enter</span>
+          <span>RSVP Here</span>
         </button>
       </div>
 
@@ -134,7 +88,7 @@ function RsvpPanel() {
           </div>
         </div>
         <label className="checkboxRow">
-          <span>Can't Make It</span>
+          <span>Can&apos;t Make It</span>
           <input type="checkbox" />
         </label>
       </section>
@@ -142,12 +96,149 @@ function RsvpPanel() {
   );
 }
 
+function RsvpModal({ onClose }: { onClose: () => void }) {
+  const [primaryName, setPrimaryName] = useState("");
+  const [guestNames, setGuestNames] = useState<string[]>([]);
+  const [notes, setNotes] = useState("");
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  const addGuest = () => {
+    setGuestNames((names) => [...names, ""]);
+  };
+
+  const removeGuest = (index: number) => {
+    setGuestNames((names) => names.filter((_, i) => i !== index));
+  };
+
+  const updateGuest = (index: number, value: string) => {
+    setGuestNames((names) => names.map((name, i) => (i === index ? value : name)));
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    startTransition(async () => {
+      const result = await submitRsvp(primaryName, guestNames, notes);
+      setStatus(result.success ? "success" : "error");
+      setMessage(result.message);
+    });
+  };
+
+  return (
+    <div className="rsvpModalBackdrop" onClick={onClose}>
+      <div
+        className="rsvpModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rsvpTitle"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="rsvpModalClose" type="button" aria-label="Close RSVP form" onClick={onClose}>
+          <X size={24} />
+        </button>
+
+        {status === "success" ? (
+          <div className="rsvpSuccess">
+            <CheckCircle2 size={48} strokeWidth={2} />
+            <h2 id="rsvpTitle">Thank You!</h2>
+            <p>{message}</p>
+            <button className="rsvpSubmitButton" type="button" onClick={onClose}>
+              Close
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <h2 id="rsvpTitle">Will You Be Joining Us?</h2>
+            <p className="rsvpSubtext">
+              Please RSVP so we can secure your spot. No email required.
+            </p>
+
+            <label className="rsvpLabel" htmlFor="primaryName">
+              Your Name *
+            </label>
+            <input
+              id="primaryName"
+              className="rsvpInput"
+              type="text"
+              value={primaryName}
+              onChange={(e) => setPrimaryName(e.target.value)}
+              placeholder="Enter your full name"
+              required
+            />
+
+            <div className="rsvpGuests">
+              <p className="rsvpLabel">Additional Guests</p>
+              {guestNames.map((name, index) => (
+                <div className="rsvpGuestRow" key={index}>
+                  <input
+                    className="rsvpInput"
+                    type="text"
+                    value={name}
+                    onChange={(e) => updateGuest(index, e.target.value)}
+                    placeholder={`Guest ${index + 1} name`}
+                  />
+                  <button
+                    className="rsvpIconButton"
+                    type="button"
+                    aria-label={`Remove guest ${index + 1}`}
+                    onClick={() => removeGuest(index)}
+                  >
+                    <Minus size={18} />
+                  </button>
+                </div>
+              ))}
+              <button className="rsvpTextButton" type="button" onClick={addGuest}>
+                <Plus size={16} />
+                Add Guest
+              </button>
+            </div>
+
+            <label className="rsvpLabel" htmlFor="notes">
+              Notes
+            </label>
+            <textarea
+              id="notes"
+              className="rsvpInput rsvpTextarea"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Dietary restrictions, accessibility needs, etc."
+              rows={3}
+            />
+
+            {status === "error" ? <p className="rsvpError">{message}</p> : null}
+
+            <button
+              className="rsvpSubmitButton"
+              type="submit"
+              disabled={isPending || !primaryName.trim()}
+            >
+              {isPending ? "Submitting..." : "Secure My Spot"}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function formatStory(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g).map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+  return <div style={{ whiteSpace: "pre-line" }}>{parts}</div>;
+}
+
 function InfoSections() {
   return (
     <>
-      <section id="love-story" className="contentSection whiteSection storySection">
-        <h2>Our Love Story</h2>
-        <p>{siteContent.loveStory}</p>
+      <section id="invitation" className="contentSection whiteSection storySection">
+        <h2>You&apos;re Invited</h2>
+        {formatStory(siteContent.loveStory)}
       </section>
 
       <section id="schedule" className="contentSection navySection scheduleSection">
@@ -190,70 +281,6 @@ function InfoSections() {
             <p>{item.answer}</p>
           </article>
         ))}
-      </section>
-
-      <section id="accommodations" className="contentSection navySection accommodationsSection">
-        <h2>Accommodations</h2>
-        {siteContent.accommodations.map((item) => (
-          <article key={item.title}>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-            <div className="linkPair">
-              <a href="#" aria-label={`${item.title} website`}>
-                <LinkIcon size={16} />
-                Go to Website
-              </a>
-              <a href="#" aria-label={`${item.title} map`}>
-                <MapPin size={17} />
-                View On Map
-              </a>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section id="restaurants" className="contentSection whiteSection restaurantsSection">
-        <h2>A Few Of Our Favorite Restaurants</h2>
-        {siteContent.restaurants.map((item) => (
-          <article key={item.title}>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </article>
-        ))}
-      </section>
-
-      <section id="registry" className="contentSection navySection registrySection">
-        <h2>Our Registry</h2>
-        <p>{siteContent.registry.intro}</p>
-        <div className="registryGrid">
-          {siteContent.registry.stores.map((store) => (
-            <a href="#" key={store}>
-              {store}
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <div className="galleryImage">
-        <Image
-          src={siteContent.galleryImage.src}
-          alt={siteContent.galleryImage.alt}
-          fill
-          sizes="(max-width: 767px) 100vw, 58vw"
-        />
-      </div>
-
-      <section id="wedding-party" className="contentSection navySection partySection">
-        <h2>Introducing Our Wedding Party</h2>
-        {siteContent.weddingParty.map((person) => (
-          <article key={`${person.name}-${person.role}`}>
-            <h3>
-              {person.name} | {person.role}
-            </h3>
-            <p>{person.description}</p>
-          </article>
-        ))}
-        <footer>Made with RSVP</footer>
       </section>
     </>
   );
