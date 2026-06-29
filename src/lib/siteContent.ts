@@ -2,7 +2,7 @@ export const siteContent = {
   event: {
     title: "We're Engaged!",
     date: "Friday, August 21, 2026",
-    heroImage: "/images/hero.png",
+    heroImage: "/images/hero.webp",
     heroImageAlt: "Couple standing together with a bouquet",
     rsvpPrompt: "We hope you can join us at River Lounge!",
     rsvpDeadline: "Friday, August 21, 2026"
@@ -11,9 +11,7 @@ export const siteContent = {
 
 The families of
 **Ibrahim Daoud**
-
 and
-
 **Maryam Jawad**
 
 request the honour of your presence to celebrate their engagement.
