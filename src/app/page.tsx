@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { CheckCircle2, Minus, Plus, X } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { siteContent } from "@/lib/siteContent";
 import { submitRsvp } from "./actions";
 
@@ -235,32 +235,67 @@ function formatStory(text: string) {
   return <div style={{ whiteSpace: "pre-line" }}>{parts}</div>;
 }
 
+function ScrollReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`scrollReveal ${isVisible ? "is-visible" : ""} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 function InfoSections() {
   return (
     <>
-      <section id="invitation" className="contentSection whiteSection storySection">
-        <div className="invitationInner">
-          <Image
-            src="/images/bismillah-sage.png"
-            alt="Bismillah al-Rahman al-Rahim"
-            width={520}
-            height={156}
-            className="invitationBismillah"
-            priority
-          />
-          <h2>You&apos;re Invited</h2>
-          {formatStory(siteContent.loveStory)}
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="invitation" className="contentSection whiteSection storySection">
+          <div className="invitationInner">
+            <div className="invitationFrame">
+              <Image
+                src="/images/bismillah-sage.png"
+                alt="Bismillah al-Rahman al-Rahim"
+                width={520}
+                height={156}
+                className="invitationBismillah"
+                priority
+              />
+              <h2>You&apos;re Invited</h2>
+              {formatStory(siteContent.loveStory)}
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
 
-      <section id="venue" className="mapSection navySection">
-        <iframe
-          title={siteContent.venue.title}
-          src={siteContent.venue.mapUrl}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
-      </section>
+      <ScrollReveal>
+        <section id="venue" className="mapSection navySection">
+          <iframe
+            title={siteContent.venue.title}
+            src={siteContent.venue.mapUrl}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </section>
+      </ScrollReveal>
     </>
   );
 }
