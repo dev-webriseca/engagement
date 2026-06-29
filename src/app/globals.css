@@ -1,13 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Josefin+Slab:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Open+Sans:wght@400;600;700&display=swap");
 
 :root {
-  --navy: #000333;
-  --lavender: #cccee5;
-  --lavender-dark: #5a5a94;
+  --navy: #3d4f3d;
+  --lavender: #c9d8c9;
+  --lavender-dark: #6a7d6a;
   --paper: #ffffff;
-  --soft-gray: #f3f4f6;
-  --muted-copy: #a7a8b8;
-  --font-display: "Josefin Slab", serif;
+  --soft-gray: #f1f4f1;
+  --muted-copy: #9aaa9a;
+  --font-display: "Playfair Display", serif;
   --font-ui: "Open Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -134,7 +134,19 @@ a {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: #e7e7e7;
+  background: #e8ebe8;
+}
+
+.heroSection::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 55%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.18) 60%, transparent 100%);
+  content: "";
+  pointer-events: none;
 }
 
 .heroImage {
@@ -142,14 +154,46 @@ a {
   object-position: center 32%;
 }
 
+.bismillahWrapper {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 24px;
+  pointer-events: none;
+}
+
+.bismillahImage {
+  width: min(78%, 700px);
+  height: auto;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+  animation: bismillahDrop 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bismillahDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .heroDetails {
   position: absolute;
+  right: 24px;
   bottom: 82px;
-  left: 40px;
+  left: 24px;
   z-index: 2;
-  width: min(66%, 560px);
+  width: calc(100% - 48px);
   color: var(--paper);
   font-family: var(--font-display);
+  text-align: center;
 }
 
 .heroDetails h1 {
@@ -157,7 +201,8 @@ a {
   font-size: 36px;
   line-height: 1.16;
   font-weight: 700;
-  letter-spacing: 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }
 
 .heroDetails p {
@@ -165,6 +210,7 @@ a {
   font-size: 18px;
   font-weight: 700;
   line-height: 1.45;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .scrollHint {
@@ -515,7 +561,7 @@ a {
 }
 
 .enterPill:hover {
-  background: #b9bce0;
+  background: #b9c7b9;
   transform: translateX(-50%) translateY(-2px);
   box-shadow: 0 8px 22px rgba(90, 90, 148, 0.38);
 }
@@ -536,7 +582,7 @@ a {
 
 .rsvpStub h3 {
   margin: 0 0 18px;
-  color: #8183a1;
+  color: #818f81;
   font-size: 28px;
   font-weight: 400;
   text-align: center;
@@ -636,9 +682,10 @@ a {
   }
 
   .heroDetails {
+    right: 32px;
     bottom: 74px;
-    left: 76px;
-    width: min(72%, 360px);
+    left: 32px;
+    width: calc(100% - 64px);
   }
 
   .heroDetails h1 {
@@ -736,9 +783,10 @@ a {
   }
 
   .heroDetails {
+    right: 24px;
     bottom: 56px;
-    left: 38px;
-    width: calc(100% - 76px);
+    left: 24px;
+    width: calc(100% - 48px);
   }
 
   .heroDetails h1 {
@@ -1310,4 +1358,59 @@ a {
 .adminRsvpCardDeleting > p {
   margin: 0 0 16px;
   font-size: 16px;
+}
+
+/* Elegant invitation section */
+.invitationInner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 16px 8px 24px;
+}
+
+.invitationBismillah {
+  width: min(85%, 520px);
+  height: auto;
+  margin: 0 auto 42px;
+}
+
+.storySection .invitationInner h2 {
+  margin-bottom: 36px;
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.invitationInner > div {
+  font-size: 19px;
+  line-height: 2;
+  letter-spacing: 0.02em;
+}
+
+.invitationInner > div strong {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.03em;
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .invitationInner {
+    padding: 8px 0 16px;
+  }
+
+  .storySection .invitationInner h2 {
+    font-size: 30px;
+    margin-bottom: 28px;
+  }
+
+  .invitationInner > div {
+    font-size: 17px;
+    line-height: 1.85;
+  }
+
+  .invitationInner > div strong {
+    font-size: 18px;
+  }
 }

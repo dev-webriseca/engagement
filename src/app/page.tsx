@@ -1,18 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { CheckCircle2, Coffee, Heart, Minus, Plus, Wine, X } from "lucide-react";
+import { CheckCircle2, Minus, Plus, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { siteContent } from "@/lib/siteContent";
 import { submitRsvp } from "./actions";
-
-type ScheduleIcon = "party" | "ceremony" | "brunch";
-
-const scheduleIcons: Record<ScheduleIcon, React.ComponentType<{ size?: number }>> = {
-  party: Wine,
-  ceremony: Heart,
-  brunch: Coffee
-};
 
 export default function Home() {
   const [rsvpOpen, setRsvpOpen] = useState(false);
@@ -43,6 +35,16 @@ function HeroSection() {
         className="heroImage"
         priority
       />
+      <div className="bismillahWrapper">
+        <Image
+          src="/images/bismillah.png"
+          alt="Bismillah al-Rahman al-Rahim"
+          width={700}
+          height={210}
+          className="bismillahImage"
+          priority
+        />
+      </div>
       <div className="heroDetails">
         <h1>{siteContent.event.title}</h1>
         <p>{siteContent.event.date}</p>
@@ -237,50 +239,27 @@ function InfoSections() {
   return (
     <>
       <section id="invitation" className="contentSection whiteSection storySection">
-        <h2>You&apos;re Invited</h2>
-        {formatStory(siteContent.loveStory)}
-      </section>
-
-      <section id="schedule" className="contentSection navySection scheduleSection">
-        <h2>Schedule of Events</h2>
-        <div className="timeline">
-          {siteContent.schedule.map((item) => {
-            const Icon = scheduleIcons[item.icon as ScheduleIcon];
-
-            return (
-              <article className="timelineItem" key={item.title}>
-                <span className="timelineIcon">
-                  <Icon size={22} />
-                </span>
-                <h3>{item.title}</h3>
-                <p className="eventTime">{item.date}</p>
-                <p className="eventLocation">{item.location}</p>
-                <p>{item.description}</p>
-              </article>
-            );
-          })}
+        <div className="invitationInner">
+          <Image
+            src="/images/bismillah-sage.png"
+            alt="Bismillah al-Rahman al-Rahim"
+            width={520}
+            height={156}
+            className="invitationBismillah"
+            priority
+          />
+          <h2>You&apos;re Invited</h2>
+          {formatStory(siteContent.loveStory)}
         </div>
       </section>
 
       <section id="venue" className="mapSection navySection">
-        <h2>{siteContent.venue.title}</h2>
-        <p className="venueAddress">{siteContent.venue.address}</p>
         <iframe
           title={siteContent.venue.title}
           src={siteContent.venue.mapUrl}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
-      </section>
-
-      <section id="qa" className="contentSection whiteSection qaSection">
-        <h2>Q&amp;As</h2>
-        {siteContent.questions.map((item) => (
-          <article key={item.question}>
-            <h3>{item.question}</h3>
-            <p>{item.answer}</p>
-          </article>
-        ))}
       </section>
     </>
   );
